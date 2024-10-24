@@ -9,7 +9,7 @@ import (
 
 func TestJsonParserValido(t *testing.T) {
 	testFiles := []string{
-		"tests/step1/valid.json",
+		"step1/valid.json",
 	}
 
 	for _, f := range testFiles {
@@ -22,6 +22,27 @@ func TestJsonParserValido(t *testing.T) {
 
 		t.Run(teste[0][1], func(t *testing.T) {
 			if true != res {
+				t.Error(`Json Inválido`)
+			}
+		})
+	}
+}
+
+func TestJsonParserInvalido(t *testing.T) {
+	testFiles := []string{
+		"step1/invalid.json",
+	}
+
+	for _, f := range testFiles {
+		strFromJson, _ := os.ReadFile(f)
+		filenameRegex, _ := regexp.Compile("(\\w+).json$")
+
+		teste := filenameRegex.FindAllStringSubmatch(f, -1)
+
+		res := IsJsonValid(string(strFromJson))
+
+		t.Run(teste[0][1], func(t *testing.T) {
+			if false != res {
 				t.Error(`Json Inválido`)
 			}
 		})
