@@ -14,6 +14,10 @@ func (t *Tokenizer) NewTokenizer(str string) *Tokenizer {
 }
 
 func (t *Tokenizer) Scan() []*Token {
+	if len(t.Source) == 0 {
+		return []*Token{nil}
+	}
+
 	for !t.isEOF() {
 		t.start = t.cursor
 		token := t.getNextToken()
