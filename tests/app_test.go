@@ -9,7 +9,7 @@ import (
 
 func TestJsonParserValido(t *testing.T) {
 	testFiles := []string{
-		"tests/step1/valid.json",
+		"step1/valid.json",
 	}
 
 	for _, f := range testFiles {
