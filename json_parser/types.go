@@ -1,6 +1,13 @@
-package jsonParser
+package json_parser
 
 type TokenType int
+
+type JsonValue interface {
+}
+
+type JsonObject = map[string]JsonValue
+
+type JsonArray = []JsonObject
 
 const (
 	Undefined TokenType = iota
@@ -8,6 +15,10 @@ const (
 	RightBrace
 	LeftBracket
 	RightBracket
+	String
+	Number
+	Boolean
+	Null
 	Comma
 	Colon
 	EOF
@@ -23,6 +34,14 @@ func (t TokenType) String() string {
 		return "RIGHT_BRACKET"
 	case LeftBracket:
 		return "LEFT_BRACKET"
+	case String:
+		return "STRING"
+	case Number:
+		return "NUMBER"
+	case Boolean:
+		return "BOOLEAN"
+	case Null:
+		return "NULL"
 	case Comma:
 		return "COMMA"
 	case Colon:

@@ -1,4 +1,4 @@
-package jsonParser
+package app
 
 type Tokenizer struct {
 	Source string
@@ -58,11 +58,38 @@ func (t *Tokenizer) getNextToken() *Token {
 		token = token.NewToken(LeftBrace, char)
 	case "}":
 		token = token.NewToken(RightBrace, char)
+	case "[":
+		token = token.NewToken(LeftBracket, char)
+	case "]":
+		token = token.NewToken(RightBracket, char)
+	case ",":
+		token = token.NewToken(Comma, char)
+	case ":":
+		token = token.NewToken(Colon, char)
+	case "\n":
+		t.line++
+	case `"`:
+		token = token.NewToken(String, char)
 	default:
 		token = nil
 	}
 
 	return token
+}
+
+func (t *Tokenizer) addString() {
+	for (!t.isEOF()) && (t.peek() != `"`) {
+		t.advance()
+	}
+
+	if t.isEOF() {
+		t.tokens = append(t.tokens, nil)
+		return
+	}
+
+	t.advance()
+
+	t.tokens = append(t.tokens, &Token{TokenType: String})
 }
 
 func (t *Tokenizer) advance() *string {
@@ -77,4 +104,12 @@ func (t *Tokenizer) advance() *string {
 	t.cursor++
 
 	return &char
+}
+
+func (t *Tokenizer) peek() string {
+	if t.isEOF() {
+		return ""
+	}
+
+	return t.Source[t.cursor : t.cursor+1]
 }

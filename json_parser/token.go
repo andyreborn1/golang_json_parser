@@ -1,4 +1,4 @@
-package jsonParser
+package app
 
 type Token struct {
 	TokenType TokenType
