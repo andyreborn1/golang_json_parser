@@ -1,4 +1,4 @@
-package jsonParser
+package json_parser
 
 type Tokenizer struct {
 	Source string
@@ -14,25 +14,30 @@ func (t *Tokenizer) NewTokenizer(str string) *Tokenizer {
 }
 
 func (t *Tokenizer) Scan() []*Token {
+	token := new(Token)
+
 	if len(t.Source) == 0 {
-		return []*Token{nil}
+		t.tokens = append(t.tokens, token.NewToken(EOF, "EOF"))
+		return t.tokens
 	}
 
 	for !t.isEOF() {
 		t.start = t.cursor
-		token := t.getNextToken()
+		token = t.getNextToken()
 
-		if token != nil {
+		if token != nil && token.TokenType != Undefined {
 			t.tokens = append(t.tokens, token)
-		} else {
+		} else if token == nil {
 			t.tokens = append(t.tokens, nil)
 			break
+		} else if token.TokenType == Undefined {
+			//pass
 		}
 
 	}
 
 	if t.tokens[len(t.tokens)-1] != nil {
-		token := new(Token)
+		token = new(Token)
 
 		t.tokens = append(t.tokens, token.NewToken(EOF, "EOF"))
 	}
@@ -58,11 +63,40 @@ func (t *Tokenizer) getNextToken() *Token {
 		token = token.NewToken(LeftBrace, char)
 	case "}":
 		token = token.NewToken(RightBrace, char)
+	case "[":
+		token = token.NewToken(LeftBracket, char)
+	case "]":
+		token = token.NewToken(RightBracket, char)
+	case ":":
+		token = token.NewToken(Colon, char)
+	case ",":
+		token = token.NewToken(Comma, char)
+	case "\n":
+		t.line++
+	case " ":
+		token = token.NewToken(Undefined, char)
+	case `"`:
+		token = t.getStringToken()
 	default:
 		token = nil
 	}
 
 	return token
+}
+
+func (t *Tokenizer) getStringToken() *Token {
+	for (!t.isEOF()) && (t.peek() != `"`) {
+		t.advance()
+	}
+
+	if t.isEOF() {
+		return nil
+	}
+
+	t.advance()
+
+	return &Token{TokenType: String, Value: t.Source[t.start+1 : t.cursor-1]}
+
 }
 
 func (t *Tokenizer) advance() *string {
@@ -77,4 +111,12 @@ func (t *Tokenizer) advance() *string {
 	t.cursor++
 
 	return &char
+}
+
+func (t *Tokenizer) peek() string {
+	if t.isEOF() {
+		return ""
+	}
+
+	return t.Source[t.cursor : t.cursor+1]
 }

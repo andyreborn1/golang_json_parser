@@ -1,4 +1,4 @@
-package jsonParser
+package json_parser
 
 func IsJsonValid(jsonString string) bool {
 	var isValid bool
@@ -8,9 +8,13 @@ func IsJsonValid(jsonString string) bool {
 
 	tokens := tokenizer.Scan()
 
-	if tokens[len(tokens)-1] != nil {
+	parser := new(Parser)
+
+	parser = parser.NewParser(tokens)
+	_, err := parser.Parse()
+
+	if err == nil {
 		isValid = true
 	}
-
 	return isValid
 }
