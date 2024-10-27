@@ -2,8 +2,7 @@ package json_parser
 
 type TokenType int
 
-type JsonValue interface {
-}
+type JsonValue = any
 
 type JsonObject = map[string]JsonValue
 
