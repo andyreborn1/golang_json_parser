@@ -1,4 +1,4 @@
-package app
+package json_parser
 
 func IsJsonValid(jsonString string) bool {
 	var isValid bool
@@ -11,10 +11,10 @@ func IsJsonValid(jsonString string) bool {
 	parser := new(Parser)
 
 	parser = parser.NewParser(tokens)
+	_, err := parser.Parse()
 
-	if tokens[len(tokens)-1] != nil {
+	if err == nil {
 		isValid = true
 	}
-
 	return isValid
 }
