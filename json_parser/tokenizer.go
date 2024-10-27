@@ -14,13 +14,16 @@ func (t *Tokenizer) NewTokenizer(str string) *Tokenizer {
 }
 
 func (t *Tokenizer) Scan() []*Token {
+	token := new(Token)
+
 	if len(t.Source) == 0 {
-		return []*Token{nil}
+		t.tokens = append(t.tokens, token.NewToken(EOF, "EOF"))
+		return t.tokens
 	}
 
 	for !t.isEOF() {
 		t.start = t.cursor
-		token := t.getNextToken()
+		token = t.getNextToken()
 
 		if token != nil && token.TokenType != Undefined {
 			t.tokens = append(t.tokens, token)
@@ -34,7 +37,7 @@ func (t *Tokenizer) Scan() []*Token {
 	}
 
 	if t.tokens[len(t.tokens)-1] != nil {
-		token := new(Token)
+		token = new(Token)
 
 		t.tokens = append(t.tokens, token.NewToken(EOF, "EOF"))
 	}
@@ -66,6 +69,8 @@ func (t *Tokenizer) getNextToken() *Token {
 		token = token.NewToken(RightBracket, char)
 	case ":":
 		token = token.NewToken(Colon, char)
+	case ",":
+		token = token.NewToken(Comma, char)
 	case "\n":
 		t.line++
 	case " ":
