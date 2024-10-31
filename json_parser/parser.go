@@ -12,8 +12,12 @@ func (p *Parser) NewParser(tokens []*Token) *Parser {
 }
 
 func (p *Parser) parseFromToken(token *Token) (JsonValue, error) {
+	if token == nil {
+		return nil, errors.New("invalid token")
+	}
+
 	switch token.TokenType {
-	case String:
+	case String, Number, Boolean, Null:
 		return token.Value, nil
 	case LeftBrace:
 		return p.parseObject()
@@ -48,7 +52,7 @@ func (p *Parser) parseObject() (JsonObject, error) {
 		}
 
 		valueToken := p.advance()
-		jsonObject[keyToken.Value], err = p.parseFromToken(valueToken)
+		jsonObject[keyToken.Value.(string)], err = p.parseFromToken(valueToken)
 
 		if err != nil {
 			return nil, err
