@@ -2,7 +2,7 @@ package json_parser
 
 type Token struct {
 	TokenType TokenType
-	Value     string
+	Value     JsonValue
 }
 
 func (token Token) NewToken(tokenType TokenType, value string) *Token {

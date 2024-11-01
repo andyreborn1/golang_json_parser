@@ -6,7 +6,7 @@ type JsonValue = any
 
 type JsonObject = map[string]JsonValue
 
-type JsonArray = []JsonObject
+type JsonArray = []JsonValue
 
 const (
 	Undefined TokenType = iota
