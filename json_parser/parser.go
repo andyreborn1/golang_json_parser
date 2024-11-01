@@ -21,6 +21,8 @@ func (p *Parser) parseFromToken(token *Token) (JsonValue, error) {
 		return token.Value, nil
 	case LeftBrace:
 		return p.parseObject()
+	case LeftBracket:
+		return p.parseSlice()
 	default:
 		return nil, errors.New("invalid token")
 	}
@@ -29,6 +31,44 @@ func (p *Parser) parseFromToken(token *Token) (JsonValue, error) {
 func (p *Parser) Parse() (JsonValue, error) {
 	token := p.advance()
 	return p.parseFromToken(token)
+}
+
+func (p *Parser) parseSlice() (JsonArray, error) {
+	jsonArray := make(JsonArray, 0)
+
+	token := p.advance()
+
+	if token == nil {
+		return nil, errors.New("unexpected end of file")
+	}
+
+	for token.TokenType != RightBracket {
+		if token.TokenType == EOF {
+			return nil, errors.New("unexpected end of file")
+		}
+
+		parsedToken, err := p.parseFromToken(token)
+
+		if err != nil {
+			return nil, errors.New("unexpected end of file")
+		}
+
+		jsonArray = append(jsonArray, parsedToken)
+
+		err = p.consumeComma(RightBracket)
+
+		if err != nil {
+			return nil, err
+		}
+
+		token = p.advance()
+
+		if token == nil {
+			return nil, errors.New("unexpected end of file")
+		}
+	}
+
+	return jsonArray, nil
 }
 
 func (p *Parser) parseObject() (JsonObject, error) {
@@ -65,6 +105,10 @@ func (p *Parser) parseObject() (JsonObject, error) {
 		}
 
 		keyToken = p.advance()
+
+		if keyToken == nil {
+			return nil, err
+		}
 	}
 
 	return jsonObject, nil

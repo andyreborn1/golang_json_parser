@@ -13,6 +13,8 @@ func TestJsonParserValido(t *testing.T) {
 		"step2/valid.json",
 		"step2/valid2.json",
 		"step3/valid.json",
+		"step4/valid.json",
+		"step4/valid2.json",
 	}
 
 	for _, f := range testFiles {
@@ -37,6 +39,7 @@ func TestJsonParserInvalido(t *testing.T) {
 		"step2/invalid.json",
 		"step2/invalid2.json",
 		"step3/invalid.json",
+		"step4/invalid.json",
 	}
 
 	for _, f := range testFiles {
